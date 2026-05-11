@@ -929,10 +929,6 @@ h3 {
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr);
   gap: 8px;
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    transform 0.18s ease;
 }
 
 :root[data-theme="light"] .achievement-catalog-card {
@@ -1155,7 +1151,6 @@ h3 {
   );
   background-size: 240% 240%;
   border-color: rgba(112, 225, 255, 0.72);
-  animation: skinGradientDrift 9s ease-in-out infinite;
 }
 
 .shop-card[data-skin="plasma"] {
@@ -1167,7 +1162,6 @@ h3 {
   );
   background-size: 250% 250%;
   border-color: rgba(214, 128, 255, 0.72);
-  animation: skinGradientDrift 6.5s linear infinite, skinPulseGlow 2.8s ease-in-out infinite;
 }
 
 .shop-card[data-skin="synthwave"] {
@@ -1182,7 +1176,6 @@ h3 {
     linear-gradient(125deg, rgba(87, 25, 100, 0.9), rgba(244, 118, 86, 0.72), rgba(57, 37, 133, 0.88));
   background-size: auto, 220% 220%;
   border-color: rgba(255, 171, 120, 0.72);
-  animation: skinGradientDrift 8.5s ease infinite, skinScanlineShift 8s linear infinite;
 }
 
 .shop-card[data-skin="crimson"] {
@@ -1201,7 +1194,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(255, 210, 230, 0.16),
     0 10px 24px rgba(157, 18, 74, 0.34);
-  animation: skinGradientDrift 7.2s ease-in-out infinite, skinPulseGlow 3.6s ease-in-out infinite;
 }
 
 .shop-card[data-skin="void"] {
@@ -1212,7 +1204,6 @@ h3 {
     linear-gradient(125deg, rgba(10, 12, 35, 0.95), rgba(8, 10, 27, 0.95));
   background-size: 150px 150px, 120px 120px, 170px 170px, 100% 100%;
   border-color: rgba(160, 178, 255, 0.68);
-  animation: skinStarfield 20s linear infinite;
 }
 
 .shop-card[data-skin="hologram"] {
@@ -1225,7 +1216,6 @@ h3 {
   );
   background-size: 280% 280%;
   border-color: rgba(206, 230, 255, 0.78);
-  animation: skinGradientDrift 7s ease-in-out infinite;
 }
 
 .shop-card[data-skin="gold"] {
@@ -1249,7 +1239,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(255, 244, 188, 0.24),
     0 10px 24px rgba(255, 180, 43, 0.35);
-  animation: goldFlow 9s linear infinite, goldPulse 5.2s ease-in-out infinite;
 }
 
 :root[data-theme="light"] .shop-card[data-skin="ember"] {
@@ -1349,18 +1338,12 @@ h3 {
 
 .row-item-trigger {
   cursor: pointer;
-  transition: transform 0.12s ease, border-color 0.12s ease;
 }
 
 .row-item-trigger:hover,
 .row-item-trigger:focus-visible {
   border-color: rgba(255, 209, 102, 0.7);
-  transform: translateY(-1px);
   outline: none;
-}
-
-.row-item-trigger:active {
-  transform: translateY(0);
 }
 
 :root[data-theme="light"] .row-item {
@@ -1412,7 +1395,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(201, 255, 224, 0.14),
     0 6px 16px rgba(95, 235, 146, 0.24);
-  animation: skinGradientDrift 7s ease-in-out infinite;
 }
 
 .row-item[data-skin="aurora"] {
@@ -1428,7 +1410,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(202, 246, 255, 0.15),
     0 6px 18px rgba(82, 190, 255, 0.26);
-  animation: skinGradientDrift 9s ease-in-out infinite;
 }
 
 .row-item[data-skin="plasma"] {
@@ -1443,7 +1424,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(241, 219, 255, 0.16),
     0 6px 18px rgba(171, 76, 255, 0.28);
-  animation: skinGradientDrift 6s linear infinite, skinPulseGlow 2.6s ease-in-out infinite;
 }
 
 .row-item[data-skin="synthwave"] {
@@ -1466,7 +1446,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(255, 222, 197, 0.14),
     0 6px 18px rgba(242, 123, 90, 0.28);
-  animation: skinGradientDrift 8s ease infinite, skinScanlineShift 8s linear infinite;
 }
 
 .row-item[data-skin="crimson"] {
@@ -1484,7 +1463,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(255, 212, 232, 0.16),
     0 6px 18px rgba(160, 20, 77, 0.3);
-  animation: skinGradientDrift 7.4s ease-in-out infinite, skinPulseGlow 3.4s ease-in-out infinite;
 }
 
 .row-item[data-skin="void"] {
@@ -1498,7 +1476,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(211, 220, 255, 0.13),
     0 6px 18px rgba(74, 88, 171, 0.26);
-  animation: skinStarfield 20s linear infinite;
 }
 
 .row-item[data-skin="hologram"] {
@@ -1514,7 +1491,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(240, 247, 255, 0.18),
     0 6px 18px rgba(123, 182, 255, 0.3);
-  animation: skinGradientDrift 7s ease-in-out infinite;
 }
 
 .row-item[data-skin="gold"] {
@@ -1538,7 +1514,6 @@ h3 {
   box-shadow:
     inset 0 0 0 1px rgba(255, 244, 188, 0.24),
     0 6px 18px rgba(255, 180, 43, 0.35);
-  animation: goldFlow 30s linear infinite, goldPulse 4.8s ease-in-out infinite;
 }
 
 :root[data-theme="light"] .row-item[data-skin="ember"] {
@@ -1743,7 +1718,6 @@ h3 {
   text-transform: uppercase;
   font-weight: 700;
   box-shadow: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
-  transition: padding 0.08s ease, box-shadow 0.08s ease;
   box-sizing: border-box;
 }
 
@@ -1785,7 +1759,6 @@ h3 {
 .add-friend-dock .dismiss-button {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.2s ease;
   background: transparent;
   border-color: transparent;
   box-shadow: none;
@@ -1973,7 +1946,6 @@ input[type="password"]::placeholder {
   border: 2px solid var(--stroke);
   background: rgba(12, 18, 32, 0.7);
   cursor: pointer;
-  transition: 0.2s ease;
 }
 
 .visibility-option input {
@@ -2064,7 +2036,6 @@ input[type="password"]::placeholder {
   background: rgba(12, 18, 32, 0.6);
   border: 2px solid var(--stroke);
   border-radius: 999px;
-  transition: 0.2s ease;
 }
 
 .toggle-ui::after {
@@ -2078,7 +2049,6 @@ input[type="password"]::placeholder {
   left: 2px;
   top: 50%;
   transform: translate(0, -50%);
-  transition: 0.2s ease;
 }
 
 .toggle input:checked + .toggle-ui {
@@ -2276,7 +2246,6 @@ button.icon-button.small:active:not(:disabled) {
   border-radius: 12px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.05));
   background-size: 200% 100%;
-  animation: shimmer 1.6s ease infinite;
 }
 
 .achievement-hover-backdrop {
@@ -2374,11 +2343,6 @@ button.icon-button.small:active:not(:disabled) {
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.25),
     var(--rarity-glow);
-}
-
-.achievement-catalog-card[data-rarity="legendary"].unlocked .achievement-catalog-icon,
-.achievement-hover-item[data-rarity="legendary"] .achievement-hover-icon {
-  animation: legendaryPulse 2.6s ease-in-out infinite;
 }
 
 .achievement-hover-copy {
@@ -2510,131 +2474,6 @@ button.icon-button.small:active:not(:disabled) {
     bottom: 12px;
     right: 12px;
     max-height: 60vh;
-  }
-}
-
-@keyframes shimmer {
-  0% {
-    background-position: 0% 0%;
-  }
-  100% {
-    background-position: 200% 0%;
-  }
-}
-
-@keyframes skinGradientDrift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-@keyframes skinPulseGlow {
-  0%,
-  100% {
-    box-shadow:
-      inset 0 0 0 1px rgba(241, 219, 255, 0.16),
-      0 6px 18px rgba(171, 76, 255, 0.24);
-  }
-  50% {
-    box-shadow:
-      inset 0 0 0 1px rgba(249, 237, 255, 0.22),
-      0 8px 22px rgba(189, 104, 255, 0.36);
-  }
-}
-
-@keyframes skinScanlineShift {
-  0% {
-    background-position:
-      0 0,
-      0% 50%;
-  }
-  100% {
-    background-position:
-      0 100%,
-      100% 50%;
-  }
-}
-
-@keyframes skinStarfield {
-  0% {
-    background-position:
-      0 0,
-      0 0,
-      0 0,
-      0 0;
-  }
-  100% {
-    background-position:
-      160px 140px,
-      -120px 100px,
-      140px -120px,
-      0 0;
-  }
-}
-
-@keyframes goldFlow {
-  0% {
-    background-position:
-      -150% 50%,
-      0% 50%;
-  }
-  50% {
-    background-position:
-      180% 50%,
-      100% 50%;
-  }
-  100% {
-    background-position:
-      -150% 50%,
-      0% 50%;
-  }
-}
-
-@keyframes goldPulse {
-  0%,
-  100% {
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 244, 188, 0.24),
-      0 6px 18px rgba(255, 180, 43, 0.3);
-  }
-  50% {
-    box-shadow:
-      inset 0 0 0 1px rgba(255, 250, 214, 0.36),
-      0 8px 22px rgba(255, 198, 74, 0.42);
-  }
-}
-
-@keyframes legendaryPulse {
-  0%,
-  100% {
-    transform: translateY(0) scale(1);
-    filter: saturate(1);
-  }
-  50% {
-    transform: translateY(-1px) scale(1.03);
-    filter: saturate(1.12);
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .loading-shimmer {
-    animation: none;
-  }
-
-  .shop-card[data-skin],
-  .row-item[data-skin] {
-    animation: none;
-  }
-
-  .achievement-catalog-card[data-rarity="legendary"].unlocked .achievement-catalog-icon,
-  .achievement-hover-item[data-rarity="legendary"] .achievement-hover-icon {
-    animation: none;
   }
 }
 

@@ -4,18 +4,13 @@ import {
   useMemo,
   useState,
   useRef,
+  type ComponentPropsWithoutRef,
   type KeyboardEvent as ReactKeyboardEvent,
   type CSSProperties,
   type FormEvent,
   type ReactNode,
   type RefObject,
 } from "react";
-import {
-  AnimatePresence,
-  motion,
-  useReducedMotion,
-  type HTMLMotionProps,
-} from "framer-motion";
 import {
   formatDuration,
   computeLeaderboard,
@@ -159,107 +154,53 @@ const HomeHeaderIcon = () => (
   </svg>
 );
 
-const motionEase = [0.22, 1, 0.36, 1] as const;
-
-const getMotionDuration = (
-  reduceMotion: boolean | null | undefined,
-  value: number
-): number =>
-  reduceMotion ? 0.01 : value;
-
-const getMotionDelay = (
-  reduceMotion: boolean | null | undefined,
-  index: number,
-  step = 0.04,
-  max = 0.3
-): number =>
-  reduceMotion ? 0 : Math.min(index * step, max);
-
-type MotionPanelProps = {
+type PanelProps = {
   className?: string;
   children: ReactNode;
-  delay?: number;
 };
 
-const MotionPanel = ({ className, children, delay = 0 }: MotionPanelProps) => {
-  const reduceMotion = useReducedMotion();
-
+const Panel = ({ className, children }: PanelProps) => {
   return (
-    <motion.section
-      layout
+    <section
       className={className ? `panel ${className}` : "panel"}
-      initial={{
-        opacity: 0,
-        y: reduceMotion ? 0 : 14,
-        scale: reduceMotion ? 1 : 0.99,
-      }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{
-        opacity: 0,
-        y: reduceMotion ? 0 : -10,
-        scale: reduceMotion ? 1 : 0.99,
-      }}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.32),
-        delay: reduceMotion ? 0 : delay,
-        ease: motionEase,
-      }}
     >
       {children}
-    </motion.section>
+    </section>
   );
 };
 
-type MotionViewProps = {
+type ViewProps = {
   viewKey: string;
   children: ReactNode;
 };
 
-const MotionView = ({ viewKey, children }: MotionViewProps) => {
-  const reduceMotion = useReducedMotion();
-
+const View = ({ viewKey, children }: ViewProps) => {
   return (
-    <motion.div
+    <div
       key={viewKey}
       className="view-stack"
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.24),
-        ease: motionEase,
-      }}
     >
       {children}
-    </motion.div>
+    </div>
   );
 };
 
-type MotionButtonProps = HTMLMotionProps<"button">;
+type ButtonProps = ComponentPropsWithoutRef<"button">;
 
-const MotionButton = ({
+const Button = ({
   children,
   disabled,
   className,
   ...props
-}: MotionButtonProps) => {
-  const reduceMotion = useReducedMotion();
-  const canAnimate = !reduceMotion && !disabled;
-
+}: ButtonProps) => {
   return (
-    <motion.button
+    <button
       className={className}
       disabled={disabled}
-      whileHover={canAnimate ? { y: -1.2, scale: 1.01 } : undefined}
-      whileTap={canAnimate ? { y: 0, scale: 0.975 } : undefined}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.14),
-        ease: motionEase,
-      }}
       {...props}
     >
       {children}
-    </motion.button>
+    </button>
   );
 };
 const ShopHeaderIcon = () => (
@@ -321,7 +262,7 @@ const AddFriendCard = ({
   loading,
   errorMessage,
 }: AddFriendCardProps) => (
-  <MotionPanel className={`add-friend-card ${docked ? "add-friend-dock" : ""}`}>
+  <Panel className={`add-friend-card ${docked ? "add-friend-dock" : ""}`}>
     <div className="panel-head">
       <div>
         <p className="eyebrow">Recruit</p>
@@ -329,14 +270,14 @@ const AddFriendCard = ({
         <p className="muted">Use their WakaTime username to sync stats.</p>
       </div>
       {dismissible && (
-        <MotionButton
+        <Button
           type="button"
           className="icon-button small dismiss-button"
           onClick={onDismiss}
           aria-label="Dismiss"
         >
           x
-        </MotionButton>
+        </Button>
       )}
     </div>
     <form className="input-row" onSubmit={onSubmit}>
@@ -347,28 +288,23 @@ const AddFriendCard = ({
         placeholder="rival-username"
         disabled={loading}
       />
-      <MotionButton className="primary" type="submit" disabled={loading}>
+      <Button className="primary" type="submit" disabled={loading}>
         Recruit
-      </MotionButton>
+      </Button>
     </form>
-    <AnimatePresence initial={false}>
+    <>
       {errorMessage && (
-        <motion.p
+        <p
           className="form-error"
-          initial={{ opacity: 0, y: -4 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.18, ease: "easeOut" }}
         >
           {errorMessage}
-        </motion.p>
+        </p>
       )}
-    </AnimatePresence>
-  </MotionPanel>
+    </>
+  </Panel>
 );
 
 const App = () => {
-  const reduceMotion = useReducedMotion();
   const [apiBase, setApiBase] = useState<string | null>(null);
   const [config, setConfig] = useState<PublicConfig | null>(null);
   const [stats, setStats] = useState<LeaderboardResponse | null>(null);
@@ -1829,7 +1765,7 @@ const App = () => {
   const coinBalance = wallet?.coins ?? shopCatalog?.coins ?? 0;
   const updateLabel = latestVersion ? `Update v${latestVersion}` : "Update";
   const updateButton = updateAvailable ? (
-    <MotionButton
+    <Button
       type="button"
       className="primary update-button"
       onClick={handleUpdate}
@@ -1845,20 +1781,14 @@ const App = () => {
       }
     >
       {updateLabel}
-    </MotionButton>
+    </Button>
   ) : null;
 
   if (showMainLoading) {
     return (
       <div className="app">
-        <motion.header
+        <header
           className="header"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: getMotionDuration(reduceMotion, 0.26),
-            ease: motionEase,
-          }}
         >
           <div className="app-brand">
             <span
@@ -1877,27 +1807,20 @@ const App = () => {
             </div>
           </div>
           <div className="header-meta">{updateButton}</div>
-        </motion.header>
-        <AnimatePresence initial={false}>
+        </header>
+        <>
           {error && (
-            <motion.div
+            <div
               className="error"
-              initial={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: reduceMotion ? 0 : -6 }}
-              transition={{
-                duration: getMotionDuration(reduceMotion, 0.2),
-                ease: motionEase,
-              }}
             >
               <span>{error}</span>
-              <MotionButton className="ghost tiny" onClick={handleRetry}>
+              <Button className="ghost tiny" onClick={handleRetry}>
                 Retry
-              </MotionButton>
-            </motion.div>
+              </Button>
+            </div>
           )}
-        </AnimatePresence>
-        <MotionPanel>
+        </>
+        <Panel>
           <div className="panel-head">
             <div>
               <p className="eyebrow">Session</p>
@@ -1906,7 +1829,7 @@ const App = () => {
             </div>
           </div>
           <div className="loading-shimmer" aria-hidden="true" />
-        </MotionPanel>
+        </Panel>
       </div>
     );
   }
@@ -1914,14 +1837,8 @@ const App = () => {
   if (!session) {
     return (
       <div className="app">
-        <motion.header
+        <header
           className="header"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: getMotionDuration(reduceMotion, 0.26),
-            ease: motionEase,
-          }}
         >
           <div className="app-brand">
             <span
@@ -1940,8 +1857,8 @@ const App = () => {
             </div>
           </div>
           <div className="header-meta">{updateButton}</div>
-        </motion.header>
-        <MotionPanel>
+        </header>
+        <Panel>
           <div className="panel-head">
             <div>
               <p className="eyebrow">Loading</p>
@@ -1950,7 +1867,7 @@ const App = () => {
             </div>
           </div>
           <div className="loading-shimmer" aria-hidden="true" />
-        </MotionPanel>
+        </Panel>
       </div>
     );
   }
@@ -1966,18 +1883,11 @@ const App = () => {
 
   return (
     <div className={`app ${showDockedAdd ? "has-docked-add" : ""}`}>
-      <AnimatePresence initial={false}>
+      <>
         {!showWelcome && (
-          <motion.header
+          <header
             className="header"
             key="main-header"
-            initial={{ opacity: 0, y: reduceMotion ? 0 : -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
-            transition={{
-              duration: getMotionDuration(reduceMotion, 0.26),
-              ease: motionEase,
-            }}
           >
             <div className="app-brand">
               <span
@@ -1998,7 +1908,7 @@ const App = () => {
             <div className="header-meta">
               {updateButton}
               {showHomeButton && (
-                <MotionButton
+                <Button
                   type="button"
                   className="icon-button ghost-button"
                   onClick={() => setActiveTab("league")}
@@ -2006,10 +1916,10 @@ const App = () => {
                   title="Back to home"
                 >
                   <HomeHeaderIcon />
-                </MotionButton>
+                </Button>
               )}
               {!showHomeButton && canRefresh && (
-                <MotionButton
+                <Button
                   type="button"
                   className="icon-button ghost-button"
                   onClick={handleRefresh}
@@ -2017,10 +1927,10 @@ const App = () => {
                   aria-label={refreshing ? "Refreshing stats" : "Refresh stats"}
                 >
                   ↻
-                </MotionButton>
+                </Button>
               )}
               {canShowControlTabs && (
-                <MotionButton
+                <Button
                   type="button"
                   className={`icon-button ghost-button ${
                     activeTab === "shop" ? "active" : ""
@@ -2030,10 +1940,10 @@ const App = () => {
                   title="Open shop"
                 >
                   <ShopHeaderIcon />
-                </MotionButton>
+                </Button>
               )}
               {canShowControlTabs && (
-                <MotionButton
+                <Button
                   type="button"
                   className={`icon-button ghost-button ${
                     activeTab === "achievements" ? "active" : ""
@@ -2043,10 +1953,10 @@ const App = () => {
                   title="Open achievements"
                 >
                   <AchievementHeaderIcon />
-                </MotionButton>
+                </Button>
               )}
               {canShowControlTabs && (
-                <MotionButton
+                <Button
                   type="button"
                   className={`icon-button ghost-button ${
                     activeTab === "settings" ? "active" : ""
@@ -2059,38 +1969,31 @@ const App = () => {
                   aria-label="Settings"
                 >
                   ⚙︎
-                </MotionButton>
+                </Button>
               )}
             </div>
-          </motion.header>
+          </header>
         )}
-      </AnimatePresence>
+      </>
 
-      <AnimatePresence initial={false}>
+      <>
         {error && (
-          <motion.div
+          <div
             className="error"
             key={`error-${error}`}
-            initial={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-            transition={{
-              duration: getMotionDuration(reduceMotion, 0.2),
-              ease: motionEase,
-            }}
           >
             <span>{error}</span>
-            <MotionButton className="ghost tiny" onClick={handleRetry}>
+            <Button className="ghost tiny" onClick={handleRetry}>
               Retry
-            </MotionButton>
-          </motion.div>
+            </Button>
+          </div>
         )}
-      </AnimatePresence>
+      </>
 
-      <AnimatePresence mode="wait" initial={false}>
+      <>
         {showWelcome ? (
-          <MotionView viewKey="welcome">
-        <MotionPanel className="hero-panel">
+          <View viewKey="welcome">
+        <Panel className="hero-panel">
           <div className="hero-center">
             <div className="app-logo" aria-hidden="true">
               <span
@@ -2108,71 +2011,50 @@ const App = () => {
             </p>
           </div>
           <div className="hero-actions">
-            <MotionButton
+            <Button
               className="primary"
               type="button"
               onClick={() => setAuthView("signup")}
             >
               Enter arena
-            </MotionButton>
-            <MotionButton
+            </Button>
+            <Button
               className="ghost"
               type="button"
               onClick={() => setAuthView("signin")}
             >
               Return
-            </MotionButton>
+            </Button>
           </div>
           <div className="feature-grid">
-            <motion.div
+            <div
               className="feature-card"
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: getMotionDuration(reduceMotion, 0.22),
-                delay: reduceMotion ? 0 : 0.05,
-                ease: motionEase,
-              }}
             >
               <h3>Daily skirmishes</h3>
               <p className="muted">
                 See who leads today in minutes, not noise.
               </p>
-            </motion.div>
-            <motion.div
+            </div>
+            <div
               className="feature-card"
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: getMotionDuration(reduceMotion, 0.22),
-                delay: reduceMotion ? 0 : 0.11,
-                ease: motionEase,
-              }}
             >
               <h3>Weekly crowns</h3>
               <p className="muted">Track the long game with weekly averages.</p>
-            </motion.div>
-            <motion.div
+            </div>
+            <div
               className="feature-card"
-              initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: getMotionDuration(reduceMotion, 0.22),
-                delay: reduceMotion ? 0 : 0.17,
-                ease: motionEase,
-              }}
             >
               <h3>Local-first</h3>
               <p className="muted">
                 No logins, no cloud accounts, just your data.
               </p>
-            </motion.div>
+            </div>
           </div>
-        </MotionPanel>
-          </MotionView>
+        </Panel>
+          </View>
         ) : showSignIn ? (
-          <MotionView viewKey="signin">
-        <MotionPanel className="form-panel">
+          <View viewKey="signin">
+        <Panel className="form-panel">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Sign in</p>
@@ -2180,13 +2062,13 @@ const App = () => {
               <p className="muted">Use your WakaWars username and password.</p>
             </div>
             {!showLogin && (
-              <MotionButton
+              <Button
                 className="ghost tiny"
                 type="button"
                 onClick={() => setAuthView("welcome")}
               >
                 Back
-              </MotionButton>
+              </Button>
             )}
           </div>
           <form className="stack" onSubmit={handleLogin}>
@@ -2221,25 +2103,25 @@ const App = () => {
                 disabled={loading}
               />
             </label>
-            <MotionButton className="primary" type="submit" disabled={loading}>
+            <Button className="primary" type="submit" disabled={loading}>
               Sign in
-            </MotionButton>
+            </Button>
           </form>
           <div className="inline-action">
             <span className="muted">New here?</span>
-            <MotionButton
+            <Button
               className="ghost tiny"
               type="button"
               onClick={() => setAuthView("signup")}
             >
               Create account
-            </MotionButton>
+            </Button>
           </div>
-        </MotionPanel>
-          </MotionView>
+        </Panel>
+          </View>
         ) : showSignUp ? (
-          <MotionView viewKey="signup">
-        <MotionPanel className="form-panel">
+          <View viewKey="signup">
+        <Panel className="form-panel">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Create account</p>
@@ -2248,13 +2130,13 @@ const App = () => {
                 Set a WakaWars username and connect your token.
               </p>
             </div>
-            <MotionButton
+            <Button
               className="ghost tiny"
               type="button"
               onClick={() => setAuthView(showLogin ? "signin" : "welcome")}
             >
               Back
-            </MotionButton>
+            </Button>
           </div>
           <form className="stack" onSubmit={handleOnboardingSubmit}>
             <label>
@@ -2289,25 +2171,25 @@ const App = () => {
                 disabled={loading}
               />
             </label>
-            <MotionButton className="primary" type="submit" disabled={loading}>
+            <Button className="primary" type="submit" disabled={loading}>
               Create account
-            </MotionButton>
+            </Button>
           </form>
           <div className="inline-action">
             <span className="muted">Already in the league?</span>
-            <MotionButton
+            <Button
               className="ghost tiny"
               type="button"
               onClick={() => setAuthView("signin")}
             >
               Sign in
-            </MotionButton>
+            </Button>
           </div>
-        </MotionPanel>
-          </MotionView>
+        </Panel>
+          </View>
         ) : showAchievements ? (
-          <MotionView viewKey="achievements">
-        <MotionPanel className="achievement-page">
+          <View viewKey="achievements">
+        <Panel className="achievement-page">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Achievements</p>
@@ -2318,7 +2200,7 @@ const App = () => {
                   : "Loading your progress"}
               </p>
             </div>
-            <MotionButton
+            <Button
               type="button"
               className="ghost tiny"
               onClick={() => {
@@ -2327,21 +2209,21 @@ const App = () => {
               disabled={achievementCatalogLoading}
             >
               Refresh
-            </MotionButton>
+            </Button>
           </div>
           {achievementCatalogLoading && !achievementCatalog ? (
             <div className="loading-shimmer" aria-hidden="true" />
           ) : achievementCatalogError && !achievementCatalog ? (
             <div className="error">
               <span>{achievementCatalogError}</span>
-              <MotionButton
+              <Button
                 className="ghost tiny"
                 onClick={() => {
                   void loadAchievementCatalog(true);
                 }}
               >
                 Retry
-              </MotionButton>
+              </Button>
             </div>
           ) : (
             <>
@@ -2362,20 +2244,13 @@ const App = () => {
                     }`,
                   },
                 ].map((chip, index) => (
-                  <motion.div
+                  <div
                     key={chip.label}
                     className="summary-chip"
-                    initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: getMotionDuration(reduceMotion, 0.2),
-                      delay: getMotionDelay(reduceMotion, index, 0.05, 0.16),
-                      ease: motionEase,
-                    }}
                   >
                     <span className="summary-chip-label">{chip.label}</span>
                     <span>{chip.value}</span>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
               <div className="achievement-catalog-grid">
@@ -2389,11 +2264,11 @@ const App = () => {
               </div>
             </>
           )}
-        </MotionPanel>
-          </MotionView>
+        </Panel>
+          </View>
         ) : showShop ? (
-          <MotionView viewKey="shop">
-        <MotionPanel className="shop-panel">
+          <View viewKey="shop">
+        <Panel className="shop-panel">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Shop</p>
@@ -2516,12 +2391,12 @@ const App = () => {
               </div>
             </>
           )}
-        </MotionPanel>
-          </MotionView>
+        </Panel>
+          </View>
         ) : showSettings ? (
-          <MotionView viewKey="settings">
+          <View viewKey="settings">
         <>
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Identity</p>
@@ -2543,17 +2418,17 @@ const App = () => {
                   disabled={loading}
                 />
               </label>
-              <MotionButton
+              <Button
                 className="primary"
                 type="submit"
                 disabled={loading || !canUpdateUsername}
               >
                 Update username
-              </MotionButton>
+              </Button>
             </form>
-          </MotionPanel>
+          </Panel>
 
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Shield</p>
@@ -2562,19 +2437,12 @@ const App = () => {
               </div>
             </div>
             {session?.passwordSet ? (
-              <motion.div
-                layout
+              <div
                 className="settings-row"
-                initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: getMotionDuration(reduceMotion, 0.18),
-                  ease: motionEase,
-                }}
               >
                 <span className="muted">Password</span>
                 <span>Set</span>
-              </motion.div>
+              </div>
             ) : (
               <>
                 <p className="muted">
@@ -2613,15 +2481,15 @@ const App = () => {
                       disabled={loading}
                     />
                   </label>
-                  <MotionButton className="primary" type="submit" disabled={loading}>
+                  <Button className="primary" type="submit" disabled={loading}>
                     {passwordActionLabel}
-                  </MotionButton>
+                  </Button>
                 </form>
               </>
             )}
-          </MotionPanel>
+          </Panel>
 
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Intel</p>
@@ -2647,20 +2515,11 @@ const App = () => {
                   description: "Hide stats from everyone else.",
                 },
               ].map((option, index) => (
-                <motion.label
-                  layout
+                <label
                   key={option.value}
                   className={`visibility-option ${
                     config?.statsVisibility === option.value ? "active" : ""
                   }`}
-                  initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  whileHover={reduceMotion ? undefined : { y: -1.5 }}
-                  transition={{
-                    duration: getMotionDuration(reduceMotion, 0.2),
-                    delay: getMotionDelay(reduceMotion, index, 0.04, 0.14),
-                    ease: motionEase,
-                  }}
                 >
                   <input
                     type="radio"
@@ -2678,12 +2537,12 @@ const App = () => {
                     <span className="visibility-title">{option.title}</span>
                     <span className="muted">{option.description}</span>
                   </div>
-                </motion.label>
+                </label>
               ))}
             </div>
-          </MotionPanel>
+          </Panel>
 
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Rivals</p>
@@ -2696,36 +2555,28 @@ const App = () => {
             {config?.friends.length ? (
               <div className="settings-list">
                 {config.friends.map((friend, index) => (
-                  <motion.div
-                    layout
+                  <div
                     className="settings-row"
                     key={friend.username}
-                    initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: getMotionDuration(reduceMotion, 0.18),
-                      delay: getMotionDelay(reduceMotion, index, 0.03, 0.18),
-                      ease: motionEase,
-                    }}
                   >
                     <span>{friend.username}</span>
-                    <MotionButton
+                    <Button
                       className="ghost danger tiny"
                       type="button"
                       onClick={() => handleRemoveFriend(friend.username)}
                       disabled={loading}
                     >
                       Remove
-                    </MotionButton>
-                  </motion.div>
+                    </Button>
+                  </div>
                 ))}
               </div>
             ) : (
               <p className="muted">No rivals yet. Recruit them below.</p>
             )}
-          </MotionPanel>
+          </Panel>
 
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Squads</p>
@@ -2743,24 +2594,16 @@ const App = () => {
                 onChange={(event) => setGroupNameInput(event.target.value)}
                 disabled={loading}
               />
-              <MotionButton className="primary" type="submit" disabled={loading}>
+              <Button className="primary" type="submit" disabled={loading}>
                 Create
-              </MotionButton>
+              </Button>
             </form>
             {config?.groups.length ? (
               <div className="group-list">
                 {config.groups.map((group, groupIndex) => (
-                  <motion.div
-                    layout
+                  <div
                     className="group-block"
                     key={group.id}
-                    initial={{ opacity: 0, y: reduceMotion ? 0 : 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: getMotionDuration(reduceMotion, 0.2),
-                      delay: getMotionDelay(reduceMotion, groupIndex, 0.04, 0.2),
-                      ease: motionEase,
-                    }}
                   >
                     <div className="group-header">
                       <div className="group-title">
@@ -2769,37 +2612,24 @@ const App = () => {
                           {group.members.length} members
                         </span>
                       </div>
-                      <MotionButton
+                      <Button
                         className="ghost danger tiny"
                         type="button"
                         onClick={() => handleDeleteGroup(group.id)}
                         disabled={loading}
                       >
                         Delete
-                      </MotionButton>
+                      </Button>
                     </div>
                     {group.members.length ? (
                       <div className="settings-list">
                         {group.members.map((member, memberIndex) => (
-                          <motion.div
-                            layout
+                          <div
                             className="settings-row"
                             key={member.id}
-                            initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              duration: getMotionDuration(reduceMotion, 0.16),
-                              delay: getMotionDelay(
-                                reduceMotion,
-                                memberIndex,
-                                0.025,
-                                0.12
-                              ),
-                              ease: motionEase,
-                            }}
                           >
                             <span>{member.username}</span>
-                            <MotionButton
+                            <Button
                               className="ghost danger tiny"
                               type="button"
                               onClick={() =>
@@ -2811,8 +2641,8 @@ const App = () => {
                               disabled={loading}
                             >
                               Remove
-                            </MotionButton>
-                          </motion.div>
+                            </Button>
+                          </div>
                         ))}
                       </div>
                     ) : (
@@ -2836,15 +2666,15 @@ const App = () => {
                         }
                         disabled={loading}
                       />
-                      <MotionButton
+                      <Button
                         className="ghost"
                         type="submit"
                         disabled={loading}
                       >
                         Add
-                      </MotionButton>
+                      </Button>
                     </form>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -2852,9 +2682,9 @@ const App = () => {
                 Create squads to add multiple rivals at once.
               </p>
             )}
-          </MotionPanel>
+          </Panel>
 
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">History</p>
@@ -2865,17 +2695,9 @@ const App = () => {
             {dailyHistory?.days?.length ? (
               <div className="history-days">
                 {historyDays.map((day, dayIndex) => (
-                  <motion.div
-                    layout
+                  <div
                     className="history-day"
                     key={`${day.offsetDays}-${day.date}`}
-                    initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: getMotionDuration(reduceMotion, 0.2),
-                      delay: getMotionDelay(reduceMotion, dayIndex, 0.035, 0.2),
-                      ease: motionEase,
-                    }}
                   >
                     <div className="history-day-head">
                       <span className="history-day-title">
@@ -2899,7 +2721,7 @@ const App = () => {
                     ) : (
                       <p className="muted">No ranked entries.</p>
                     )}
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -2907,9 +2729,9 @@ const App = () => {
                 {loading ? "Loading history..." : "No history available yet."}
               </p>
             )}
-          </MotionPanel>
+          </Panel>
 
-          <MotionPanel className="settings-panel">
+          <Panel className="settings-panel">
             <div className="panel-head">
               <div>
                 <p className="eyebrow">Systems</p>
@@ -2952,17 +2774,9 @@ const App = () => {
                   disabled: false,
                 },
               ].map((item, index) => (
-                <motion.div
-                  layout
+                <div
                   className="settings-row"
                   key={item.label}
-                  initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: getMotionDuration(reduceMotion, 0.18),
-                    delay: getMotionDelay(reduceMotion, index, 0.03, 0.14),
-                    ease: motionEase,
-                  }}
                 >
                   <span className="muted">{item.label}</span>
                   <label className="toggle">
@@ -2974,7 +2788,7 @@ const App = () => {
                     />
                     <span className="toggle-ui" />
                   </label>
-                </motion.div>
+                </div>
               ))}
             </div>
             {launchAtLoginStatus === "requires-approval" && (
@@ -2993,7 +2807,7 @@ const App = () => {
                 Menu bar time is available in the macOS app.
               </p>
             )}
-          </MotionPanel>
+          </Panel>
 
           <AddFriendCard
             friendInput={friendInput}
@@ -3008,11 +2822,11 @@ const App = () => {
             errorMessage={addFriendError}
           />
         </>
-          </MotionView>
+          </View>
         ) : (
-          <MotionView viewKey="league">
+          <View viewKey="league">
         <>
-          <MotionPanel className="league-panel">
+          <Panel className="league-panel">
             <div className="league-header">
               <div className="league-title">
                 <div className="league-title-row">
@@ -3031,7 +2845,7 @@ const App = () => {
               </div>
               <div className="league-actions">
                 <div className="tab-group">
-                  <MotionButton
+                  <Button
                     type="button"
                     className={`tab-button ${
                       activeLeagueTab === "today" ? "active" : ""
@@ -3039,8 +2853,8 @@ const App = () => {
                     onClick={() => setActiveLeagueTab("today")}
                   >
                     Today
-                  </MotionButton>
-                  <MotionButton
+                  </Button>
+                  <Button
                     type="button"
                     className={`tab-button ${
                       activeLeagueTab === "weekly" ? "active" : ""
@@ -3048,10 +2862,10 @@ const App = () => {
                     onClick={() => setActiveLeagueTab("weekly")}
                   >
                     Week
-                  </MotionButton>
+                  </Button>
                 </div>
                 {config && (
-                  <MotionButton
+                  <Button
                     type="button"
                     className={`ghost competition-toggle ${
                       isCompeting ? "danger" : ""
@@ -3059,7 +2873,7 @@ const App = () => {
                     onClick={handleCompetitionToggle}
                   >
                     {competitionButtonLabel}
-                  </MotionButton>
+                  </Button>
                 )}
               </div>
             </div>
@@ -3078,7 +2892,7 @@ const App = () => {
                       <p className="muted">No rivals yet.</p>
                     ) : (
                       <div className="list">
-                        <AnimatePresence mode="popLayout" initial={false}>
+                        <>
                           {displayPinnedEntry &&
                             (activeLeagueTab === "weekly" ? (
                               <WeeklyLeaderboardRow
@@ -3122,22 +2936,14 @@ const App = () => {
                                   onSelect={handleRowSelect}
                                 />
                               ))}
-                        </AnimatePresence>
+                        </>
                       </div>
                     )}
                   </div>
                   <div className="league-grid">
                     <div className="league-side">
-                      <motion.div
-                        layout
+                      <div
                         className="subcard podium-card"
-                        initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{
-                          duration: getMotionDuration(reduceMotion, 0.2),
-                          delay: getMotionDelay(reduceMotion, 1, 0.06, 0.12),
-                          ease: motionEase,
-                        }}
                       >
                         <div className="subcard-header">
                           <h3>Yesterday's podium</h3>
@@ -3159,7 +2965,7 @@ const App = () => {
                         ) : (
                           <p className="muted">No ranked entries yet.</p>
                         )}
-                      </motion.div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -3171,21 +2977,15 @@ const App = () => {
                   : "No stats yet."}
               </p>
             )}
-          </MotionPanel>
-          <AnimatePresence>
+          </Panel>
+          <>
             {showHoverModal && (
-              <motion.div
+              <div
                 className="achievement-hover-backdrop"
                 aria-hidden="true"
                 onMouseDown={(event) => {
                   event.preventDefault();
                   setHoveredUsername(null);
-                }}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{
-                  duration: getMotionDuration(reduceMotion, 0.16),
                 }}
               />
             )}
@@ -3199,7 +2999,7 @@ const App = () => {
                 }}
               />
             )}
-          </AnimatePresence>
+          </>
           {showDockedAdd && (
             <AddFriendCard
               docked
@@ -3221,9 +3021,9 @@ const App = () => {
             />
           )}
         </>
-          </MotionView>
+          </View>
         )}
-      </AnimatePresence>
+      </>
     </div>
   );
 };
@@ -3296,24 +3096,14 @@ const AchievementCatalogCard = ({
   sequenceIndex?: number;
 }) => {
   const rarity = getAchievementRarity(achievement.id);
-  const reduceMotion = useReducedMotion();
 
   return (
-    <motion.div
-      layout
+    <div
       className={`achievement-catalog-card ${
         achievement.unlocked ? "unlocked" : "locked"
       } rarity-${rarity}`}
       data-rarity={rarity}
       aria-disabled={!achievement.unlocked}
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.2),
-        delay: getMotionDelay(reduceMotion, sequenceIndex, 0.02, 0.18),
-        ease: motionEase,
-      }}
-      whileHover={reduceMotion ? undefined : { y: -2 }}
     >
       <div className="achievement-catalog-icon">{achievement.icon}</div>
       <div className="achievement-catalog-copy">
@@ -3328,7 +3118,7 @@ const AchievementCatalogCard = ({
           Last unlock: {formatOptionalAchievementDate(achievement.lastAwardedAt)}
         </span>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -3344,27 +3134,11 @@ const UserAchievementsModal = ({
   onRetry: () => void;
 }) => {
   const achievements = state.data?.achievements ?? [];
-  const reduceMotion = useReducedMotion();
 
   return (
-    <motion.aside
+    <aside
       ref={modalRef}
       className="achievement-hover-modal"
-      initial={{
-        opacity: 0,
-        y: reduceMotion ? 0 : 8,
-        scale: reduceMotion ? 1 : 0.98,
-      }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{
-        opacity: 0,
-        y: reduceMotion ? 0 : 8,
-        scale: reduceMotion ? 1 : 0.98,
-      }}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.2),
-        ease: motionEase,
-      }}
     >
       <div className="achievement-hover-head">
         <p className="eyebrow">Achievements</p>
@@ -3378,9 +3152,9 @@ const UserAchievementsModal = ({
       ) : state.error && !state.data ? (
         <div className="achievement-hover-error">
           <p className="muted">{state.error}</p>
-          <MotionButton type="button" className="ghost tiny" onClick={onRetry}>
+          <Button type="button" className="ghost tiny" onClick={onRetry}>
             Retry
-          </MotionButton>
+          </Button>
         </div>
       ) : achievements.length === 0 ? (
         <p className="muted">No achievements unlocked yet.</p>
@@ -3390,17 +3164,10 @@ const UserAchievementsModal = ({
             const rarity = getAchievementRarity(achievement.id);
 
             return (
-              <motion.div
+              <div
                 key={achievement.id}
                 className={`achievement-hover-item rarity-${rarity}`}
                 data-rarity={rarity}
-                initial={{ opacity: 0, y: reduceMotion ? 0 : -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: getMotionDuration(reduceMotion, 0.18),
-                  delay: reduceMotion ? 0 : index * 0.06,
-                  ease: motionEase,
-                }}
               >
                 <div
                   className="achievement-hover-icon"
@@ -3419,12 +3186,12 @@ const UserAchievementsModal = ({
                     </span>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             );
           })}
         </div>
       )}
-    </motion.aside>
+    </aside>
   );
 };
 
@@ -3442,24 +3209,15 @@ const MiniRow = ({
   const timeClass =
     entry.status === "ok" ? "mini-time" : "mini-time muted status";
   const displayName = isSelf ? `${entry.username} (you)` : entry.username;
-  const reduceMotion = useReducedMotion();
 
   return (
-    <motion.div
-      layout
+    <div
       className={`mini-row ${podiumClass}`}
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 6 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.18),
-        delay: getMotionDelay(reduceMotion, sequenceIndex, 0.025, 0.1),
-        ease: motionEase,
-      }}
     >
       <span className="mini-rank">{rankLabel}</span>
       <span className="mini-name">{displayName}</span>
       <span className={timeClass}>{timeLabel ?? "—"}</span>
-    </motion.div>
+    </div>
   );
 };
 
@@ -3484,7 +3242,6 @@ const BaseLeaderboardRow = ({
     .join(" • ");
   const skinId = entry.equippedSkinId ?? "classic";
   const handleClick = () => onSelect?.(entry.username);
-  const reduceMotion = useReducedMotion();
   const handleKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
     if (!onSelect) return;
     if (event.key !== "Enter" && event.key !== " ") return;
@@ -3493,22 +3250,13 @@ const BaseLeaderboardRow = ({
   };
 
   return (
-    <motion.div
-      layout
+    <div
       className={`row-item row-item-trigger ${isSelf ? "self" : ""} ${podiumClass} status-${entry.status} skin-${skinId}`}
       data-skin={skinId}
       role={onSelect ? "button" : undefined}
       tabIndex={onSelect ? 0 : undefined}
       onClick={onSelect ? handleClick : undefined}
       onKeyDown={handleKeyDown}
-      initial={{ opacity: 0, y: reduceMotion ? 0 : 8 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{
-        duration: getMotionDuration(reduceMotion, 0.2),
-        delay: getMotionDelay(reduceMotion, sequenceIndex, 0.02, 0.22),
-        ease: motionEase,
-      }}
-      whileHover={reduceMotion ? undefined : { y: -1 }}
     >
       <div className="row-item-left">
         <div className="avatar">{entry.username.slice(0, 1).toUpperCase()}</div>
@@ -3530,7 +3278,7 @@ const BaseLeaderboardRow = ({
           <span className="rank-display">{rankLabel}</span>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
