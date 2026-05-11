@@ -1984,61 +1984,6 @@ const App = () => {
                 className="app-brand-icon"
                 role="img"
                 aria-label="WakaWars logo"
-                className="app-brand-mark logo-mask"
-                style={logoMaskStyle}
-              />
-            </span>
-            <div className="brand-copy">
-              <span className="brand-title">WakaWars</span>
-              <span className="brand-sub">{headerSubtitle}</span>
-            </div>
-          </div>
-          <div className="header-meta">
-            {updateButton}
-            {showHomeButton && (
-              <button
-                type="button"
-                className="icon-button ghost-button"
-                onClick={() => setActiveTab("league")}
-                aria-label="Back to home"
-                title="Back to home"
-              >
-                <HomeHeaderIcon />
-              </button>
-            )}
-            {!showHomeButton && canRefresh && (
-              <button
-                type="button"
-                className="icon-button ghost-button"
-                onClick={handleRefresh}
-                disabled={refreshing || loading}
-                aria-label={refreshing ? "Refreshing stats" : "Refresh stats"}
-              >
-                ↻
-              </button>
-            )}
-            {canShowControlTabs && (
-              <button
-                type="button"
-                className={`icon-button ghost-button ${
-                  activeTab === "shop" ? "active" : ""
-                }`}
-                onClick={() => setActiveTab("shop")}
-                aria-label="Shop"
-                title="Open shop"
-              >
-                <ShopHeaderIcon />
-              </button>
-            )}
-            {canShowControlTabs && (
-              <button
-                type="button"
-                className={`icon-button ghost-button ${
-                  activeTab === "achievements" ? "active" : ""
-                }`}
-                onClick={openAchievementsPage}
-                aria-label="Achievements"
-                title="Open achievements"
               >
                 <span
                   className="app-brand-mark logo-mask"
@@ -2072,6 +2017,19 @@ const App = () => {
                   aria-label={refreshing ? "Refreshing stats" : "Refresh stats"}
                 >
                   ↻
+                </MotionButton>
+              )}
+              {canShowControlTabs && (
+                <MotionButton
+                  type="button"
+                  className={`icon-button ghost-button ${
+                    activeTab === "shop" ? "active" : ""
+                  }`}
+                  onClick={() => setActiveTab("shop")}
+                  aria-label="Shop"
+                  title="Open shop"
+                >
+                  <ShopHeaderIcon />
                 </MotionButton>
               )}
               {canShowControlTabs && (
@@ -2433,11 +2391,9 @@ const App = () => {
           )}
         </MotionPanel>
           </MotionView>
-        ) : showSettings ? (
-          <MotionView viewKey="settings">
-        </section>
-      ) : showShop ? (
-        <section className="panel shop-panel">
+        ) : showShop ? (
+          <MotionView viewKey="shop">
+        <MotionPanel className="shop-panel">
           <div className="panel-head">
             <div>
               <p className="eyebrow">Shop</p>
@@ -2560,8 +2516,10 @@ const App = () => {
               </div>
             </>
           )}
-        </section>
-      ) : showSettings ? (
+        </MotionPanel>
+          </MotionView>
+        ) : showSettings ? (
+          <MotionView viewKey="settings">
         <>
           <MotionPanel className="settings-panel">
             <div className="panel-head">
@@ -3537,8 +3495,6 @@ const BaseLeaderboardRow = ({
   return (
     <motion.div
       layout
-      className={`row-item row-item-trigger ${isSelf ? "self" : ""} ${podiumClass} status-${entry.status}`}
-    <div
       className={`row-item row-item-trigger ${isSelf ? "self" : ""} ${podiumClass} status-${entry.status} skin-${skinId}`}
       data-skin={skinId}
       role={onSelect ? "button" : undefined}

@@ -129,7 +129,6 @@ export const createWakaTimeSync = ({
     return toDateKeyInTimeZone(new Date(), input.timeZone ?? null);
   };
 
-  const runOnceInternal = async ({ bypassCache = false }: { bypassCache?: boolean } = {}) => {
   const resolveYesterdayDateKey = (
     input: { timeZone?: string | null },
     baseDate: Date
@@ -257,7 +256,9 @@ export const createWakaTimeSync = ({
     }
   };
 
-  const runOnce = async () => {
+  const runOnceInternal = async ({
+    bypassCache = false
+  }: { bypassCache?: boolean } = {}) => {
     if (running) return;
     running = true;
 
