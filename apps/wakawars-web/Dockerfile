@@ -2,9 +2,18 @@
 FROM oven/bun:1 AS builder
 WORKDIR /app
 
-COPY . .
+ARG VITE_API_BASE
+ENV VITE_API_BASE=$VITE_API_BASE
 
-RUN bun install --frozen-lockfile
+COPY package.json bun.lock tsconfig.base.json ./
+COPY packages/shared/package.json packages/shared/package.json
+COPY apps/wakawars-web/package.json apps/wakawars-web/package.json
+
+RUN bun install
+
+COPY packages/shared packages/shared
+COPY apps/wakawars-web apps/wakawars-web
+
 RUN cd packages/shared && bun run build
 RUN cd apps/wakawars-web && bun run build
 

@@ -3,6 +3,7 @@ import { createServer } from "./app.js";
 
 const start = async () => {
   const port = Number(process.env.PORT || 3000);
+  const hostname = process.env.HOST || "0.0.0.0";
   const databaseUrl = process.env.DATABASE_URL;
 
   if (!databaseUrl) {
@@ -13,6 +14,7 @@ const start = async () => {
 
   const server = createServer({
     port,
+    hostname,
     databaseUrl,
   });
 

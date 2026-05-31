@@ -86,7 +86,7 @@ const INITIAL_SKINS: SeedSkin[] = [
 ];
 
 const main = async () => {
-  const prisma = createPrismaClient(process.env.DATABASE_URL);
+  const prisma = createPrismaClient("postgresql://postgres:1pMndebosaa5Q23sVUQOKyQaUFRTYQUleaB0yRl6aLrZ0ueT7lKVGNzHm4ThJwu5@138.199.197.214:5433/postgres?statusColor=686B6F&env=&name=Molty&tLSMode=0&usePrivateKey=false&safeModeLevel=0&advancedSafeModeLevel=0&driverVersion=0&lazyload=true");
 
   try {
     await prisma.$connect();
