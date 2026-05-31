@@ -386,6 +386,12 @@ const App = () => {
     if (stored === "false") return false;
     return false;
   });
+  const [appSkinsEnabled, setAppSkinsEnabled] = useState(() => {
+    const stored = localStorage.getItem("wakawarsAppSkins");
+    if (stored === "true") return true;
+    if (stored === "false") return false;
+    return true;
+  });
   const [hoveredUsername, setHoveredUsername] = useState<string | null>(null);
   const [userAchievements, setUserAchievements] = useState<
     Record<
@@ -726,6 +732,13 @@ const App = () => {
       menuBarRankEnabled ? "true" : "false"
     );
   }, [menuBarRankEnabled]);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "wakawarsAppSkins",
+      appSkinsEnabled ? "true" : "false"
+    );
+  }, [appSkinsEnabled]);
 
   useEffect(() => {
     checkForUpdates();
@@ -1880,9 +1893,16 @@ const App = () => {
       !showAchievements &&
       !showShop
   );
+  const appClassName = [
+    "app",
+    showDockedAdd ? "has-docked-add" : "",
+    appSkinsEnabled ? "skins-enabled" : "skins-disabled",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
-    <div className={`app ${showDockedAdd ? "has-docked-add" : ""}`}>
+    <div className={appClassName}>
       <>
         {!showWelcome && (
           <header
@@ -2762,6 +2782,14 @@ const App = () => {
                   checked: menuBarRankEnabled,
                   onChange: (checked: boolean) => {
                     setMenuBarRankEnabled(checked);
+                  },
+                  disabled: false,
+                },
+                {
+                  label: "App skins",
+                  checked: appSkinsEnabled,
+                  onChange: (checked: boolean) => {
+                    setAppSkinsEnabled(checked);
                   },
                   disabled: false,
                 },
